@@ -76,6 +76,7 @@ class ProductController extends AbstractController
         // $form->setData($product);
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
+            //dd($form->getData());
             $em = $managerRegistry->getManager();
             $em->flush();
 
@@ -105,11 +106,13 @@ class ProductController extends AbstractController
         SluggerInterface $sluggerInterface,
         ManagerRegistry $doctrine
     ) {
-        $form = $this->createForm(ProductType::class);
+        $product = new Product();
+        $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $product = $form->getData();
+
+
             $product->setSlug(strtolower($sluggerInterface->slug($product->getName())));
 
             $em = $doctrine->getManager();
