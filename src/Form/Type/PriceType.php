@@ -12,6 +12,10 @@ class PriceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($options['divide'] === false) {
+            return;
+        }
+
         $builder->addModelTransformer(new CentimesTransofmer);
     }
     public function getParent()

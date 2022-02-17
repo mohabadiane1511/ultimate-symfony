@@ -4,14 +4,15 @@ namespace App\Form;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Form\Type\PriceType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use App\Form\DataTransformer\CentimesTransofmer;
-use App\Form\Type\PriceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,7 +27,9 @@ class ProductType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom du produit',
-                'attr' => ['class' => 'form-control', 'placeholder' => 'Nom du produit ']
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Nom du produit '],
+                'required' => false,
+
             ])
             ->add('shortDescription', TextareaType::class, [
                 'label' => 'Description courte',
@@ -35,7 +38,9 @@ class ProductType extends AbstractType
             ->add('price', MoneyType::class, [
                 'label' => 'Prix du produit',
                 'attr' => ['placeholder' => 'Tapez le prix du produit en euro '],
-                'divisor' => 100
+                'divisor' => 100,
+                'required' => false,
+
 
             ])
             ->add('mainPicture', UrlType::class, [

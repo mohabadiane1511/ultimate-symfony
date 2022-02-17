@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -21,9 +22,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProductController extends AbstractController
@@ -69,13 +70,15 @@ class ProductController extends AbstractController
     /**
      * @Route("/admin/product/{id}/edit" ,name="product_edit")
      */
-    public function edit($id, ProductRepository $productRepository, Request $request, ManagerRegistry $managerRegistry, UrlGeneratorInterface $urlGenerator)
+    public function edit($id, ValidatorInterface $validatorInterface, ProductRepository $productRepository, Request $request, ManagerRegistry $managerRegistry)
     {
+
+
         $product = $productRepository->find($id);
         $form = $this->createForm(ProductType::class, $product);
         // $form->setData($product);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             //dd($form->getData());
             $em = $managerRegistry->getManager();
             $em->flush();
@@ -110,7 +113,7 @@ class ProductController extends AbstractController
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
 
             $product->setSlug(strtolower($sluggerInterface->slug($product->getName())));
