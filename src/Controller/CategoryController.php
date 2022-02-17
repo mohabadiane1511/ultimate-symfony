@@ -15,6 +15,22 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class CategoryController extends AbstractController
 {
+    protected $categoryRepository;
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
+    public function renderMenuList()
+    {
+        // Aller Chercher les categories dans la base de donnees
+
+        $category = $this->categoryRepository->findAll();
+        // Renvoyer le rendu HTML sous la forme d'une Reponse 
+        return $this->render('category/_menu.html.twig', [
+            'category' => $category
+        ]);
+    }
     /**
      * @Route("/admin/category/create", name="category_create")
      */
@@ -24,7 +40,7 @@ class CategoryController extends AbstractController
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $category->setSlug(strtolower($sluggerInterface->slug($category->getName())));
 
             $em = $managerRegistry->getManager();
@@ -48,7 +64,7 @@ class CategoryController extends AbstractController
         $category = $categoryRepository->find($id);
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $managerRegistry->getManager();
             $em->flush();
 
