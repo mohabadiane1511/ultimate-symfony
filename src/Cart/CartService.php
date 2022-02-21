@@ -25,6 +25,11 @@ class CartService
         return $this->session->set('cart', $cart);
     }
 
+    public function empty()
+    {
+        $this->saveCart([]);
+    }
+
     public function add(int $id)
     {
         // 1- Retrouvez le panier dans la Session
@@ -57,7 +62,9 @@ class CartService
         }
         return $total;
     }
-
+    /**
+     * @return CartItem[]
+     */
     public function getDetailsCartItems(): array
     {
         $details = [];
@@ -74,7 +81,7 @@ class CartService
 
     public function remove(int $id)
     {
-        $cart = $this->getCart;
+        $cart = $this->getCart();
         unset($cart[$id]);
         $this->saveCart($cart);
     }
