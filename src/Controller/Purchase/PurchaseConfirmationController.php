@@ -7,6 +7,7 @@ use App\Entity\Purchase;
 use App\Cart\CartService;
 use App\Entity\PurchaseItem;
 use App\Form\CartConfirmationType;
+use App\Purchase\PurchasePersister;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -28,6 +29,7 @@ class PurchaseConfirmationController extends AbstractController
 
     public function confirm(
         Request $request,
+        PurchasePersister $persister,
 
         RouterInterface $router,
 
@@ -58,34 +60,12 @@ class PurchaseConfirmationController extends AbstractController
         /** @var Purchase */
         $purchase = $form->getData();
 
-        $purchase->setUser($user)
-            ->setPurchaseAt(new DateTime())
-            ->setTotal($cartService->getTotal());
-        $manager->getManager()->persist($purchase);
-
-
-        foreach ($cartService->getDetailsCartItems() as $cartItems) {
-            $purchaseItem = new PurchaseItem();
-            $purchaseItem->setPruchase($purchase)
-                ->setProduct($cartItems->product)
-                ->setProductName($cartItems->product->getName())
-                ->setQuantity($cartItems->qty)
-                ->setTotal($cartItems->getTotal())
-                ->setProductPrice($cartItems->product->getPrice());
-
-
-            $manager->getManager()->persist($purchaseItem);
-        }
-
-
+        $persister->storePurchase($purchase);
         //Vider le panier avant denregistrer dasn la BD
 
-        $cartService->empty();
-        //Enregistrer la commande
-        $manager->getManager()->flush();
 
-        $this->addFlash('success', 'La commande a bien ete enregistre');
-
-        return $this->redirectToRoute('purchase_index');
+        return $this->redirectToRoute('purchase_form', [
+            'id' => $purchase->getId()
+        ]);
     }
 }
