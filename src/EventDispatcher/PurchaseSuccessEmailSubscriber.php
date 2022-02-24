@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Event;
+namespace App\EventDispatcher;
 
 use Psr\Log\LoggerInterface;
+use App\Event\PurchaseSuccessEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PurchaseSuccessEmailSubscriber implements EventSubscriberInterface
