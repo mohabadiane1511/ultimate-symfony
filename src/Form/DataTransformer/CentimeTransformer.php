@@ -4,7 +4,7 @@ namespace App\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
 
-class CentimesTransofmer implements DataTransformerInterface
+class CentimeTransformer implements DataTransformerInterface
 {
     public function transform($value)
     {
