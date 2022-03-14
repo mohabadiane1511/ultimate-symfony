@@ -33,7 +33,7 @@ class UserController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'L\'utilisateur ' . $user->getFullName() . ' a bien été créé');
-            return $this->redirectToRoute('/');
+            return $this->redirectToRoute('user_create');
         }
         $formView = $form->createView();
 
